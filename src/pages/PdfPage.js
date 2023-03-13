@@ -1,44 +1,42 @@
-import React from "react";
-import { Viewer } from "@react-pdf-viewer/core";
-import { printPlugin } from "@react-pdf-viewer/print";
+import React, { useRef, useState } from "react";
+import { Document, Page, pdfjs } from "react-pdf";
+import { useReactToPrint } from "react-to-print";
 
-import "@react-pdf-viewer/print/lib/styles/index.css";
+const options = {
+  cMapUrl: 'cmaps/',
+  cMapPacked: true,
+  standardFontDataUrl: 'standard_fonts/',
+};
 
 export default function PdfPage() {
-  const printPluginInstance = printPlugin();
-  const pageLayout = {
-    buildPageStyles: () => ({
-      alignItems: "center",
-      display: "flex",
-      justifyContent: "center",
-    }),
-    transformSize: ({size}) => ({height: size.height + 30, width: size.width + 10}),
+  const [numPages, setNumPages] = useState(null);
+
+  const componentRef = useRef();
+
+  pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
+
+  const handlePrint = useReactToPrint({
+    content: () => componentRef.current,
+    documentTitle: 'pdf-print-test',
+    onBeforePrint: () => console.log("Start printing"),
+    onAfterPrint: () => console.log("Print success"),
+  })
+
+
+  function onDocumentLoadSuccess({ numPages }) {
+    setNumPages(numPages);
   }
-  const {Print} = printPluginInstance;
 
   return (
-      <div
-        className={"pdf_container"}
-      >
-        <div className={"pdf_inner_container"}>
-          <Print>
-            {(props) => (
-              <button
-                className={"pdf_button"}
-                onClick={props.onClick}
-              >
-                Print
-              </button>
-            )}
-          </Print>
-        </div>
-        <div className={"pdf_content"}>
-          <Viewer
-            pageLayout={pageLayout}
-            fileUrl={"./sample.pdf"}
-            plugins={[printPluginInstance]}
-          />
-        </div>
+    <div className="container">
+      <button className={"pdf_button"} onClick={handlePrint}>Print</button>
+      <div  className="pdf_container">
+        <Document file={"./sample.pdf"} onLoadSuccess={onDocumentLoadSuccess} options={options}>
+          {Array.from(new Array(numPages), (el, index) => (
+            <Page ref={componentRef} key={`page_${index + 1}`} pageNumber={index + 1} />
+          ))}
+        </Document>
       </div>
+    </div>
   )
 }
