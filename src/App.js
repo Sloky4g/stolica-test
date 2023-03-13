@@ -1,24 +1,12 @@
-import logo from './logo.svg';
 import './App.css';
+import { Worker } from "@react-pdf-viewer/core";
+import MasterRoute from "./routes/MasterRoute";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Worker workerUrl={"https://unpkg.com/pdfjs-dist@3.3.122/build/pdf.worker.min.js"}>
+      <MasterRoute/>
+    </Worker>
   );
 }
 
