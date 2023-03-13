@@ -33,7 +33,9 @@ export default function PdfPage() {
       <div  className="pdf_container">
         <Document file={"./sample.pdf"} onLoadSuccess={onDocumentLoadSuccess} options={options}>
           {Array.from(new Array(numPages), (el, index) => (
-            <Page ref={componentRef} key={`page_${index + 1}`} pageNumber={index + 1} />
+            <div ref={componentRef} key={`page_${index + 1}`}>
+              <Page pageNumber={index + 1} />
+            </div>
           ))}
         </Document>
       </div>
