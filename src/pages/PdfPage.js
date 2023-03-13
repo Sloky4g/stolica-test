@@ -32,11 +32,11 @@ export default function PdfPage() {
       <button className={"pdf_button"} onClick={handlePrint}>Print</button>
       <div  className="pdf_container">
         <Document file={"./sample.pdf"} onLoadSuccess={onDocumentLoadSuccess} options={options}>
-          {Array.from(new Array(numPages), (el, index) => (
-            <div ref={componentRef} key={`page_${index + 1}`}>
-              <Page pageNumber={index + 1} />
-            </div>
-          ))}
+          <div ref={componentRef}>
+            {Array.from(new Array(numPages), (el, index) => (
+              <Page key={`page_${index + 1}`} pageNumber={index + 1} />
+            ))}
+          </div>
         </Document>
       </div>
     </div>
